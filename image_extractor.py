@@ -15,7 +15,7 @@ def get_pdf_images(doc):
             img = Image.open(io.BytesIO(data))
             images.append(img)
     
-    images[0].save("raw_pdfs\extracted.pdf", save_all = True, append_images = images[1:])
+    images[0].save("pdf\extracted.pdf", save_all = True, append_images = images[1:])
 
 def opener(file):
     return fitz.open(file)
