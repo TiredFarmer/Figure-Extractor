@@ -17,10 +17,12 @@ def get_pdf_images(doc):
     
     images[0].save("raw_pdfs\extracted.pdf", save_all = True, append_images = images[1:])
 
+def opener(file):
+    return fitz.open(file)
+
+# if __name__ == "__main__":
   
-file = "raw_pdfs\Scott Freeman Kim Quillin Lizabeth Allison Michael Black Greg Podgorski Emily Taylor Jeff Carmichael Michael Harrington Joan C. Sharp - Biological Science, Third Canadian Edition, 3rd edition-Pearson  (1).pdf"
-
-pdf_file = fitz.open(file)
-
-get_pdf_images(pdf_file)
+#     file = "raw_pdfs/bio_book.pdf"
+#     pdf_file = fitz.open(file)
+#     get_pdf_images(pdf_file)
   
