@@ -1,15 +1,18 @@
 import fitz
 import io
 from PIL import Image
-from BoundingBox import BoundingBox
+from bounding_box import BoundingBox
 
 def get_pdf_images(doc, final_name):
     images = []
+    
 
     for i in range(doc.pageCount):
         page = doc[i]
         print("EXTRACTING PAGE", i)
         l = get_page_images(page, doc)
+        if not l:
+            continue
         for image in l:
             images.append(image)
     
