@@ -25,3 +25,4 @@ def opener(file):
 #     file = "raw_pdfs/bio_book.pdf"
 #     pdf_file = fitz.open(file)
 #     get_pdf_images(pdf_file)
+  
