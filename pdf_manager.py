@@ -14,15 +14,19 @@ def split_pdf_get_images(pdf_name: str, start: int, end: int) -> str:
     if end == -1:
         end = pdf_in.getNumPages()
 
+    if start - 1 < 0 or end > pdf_in.getNumPages():
+        return
 
     for page in range(start - 1, end):
         pdf_out.addPage(pdf_in.getPage(page))
 
     new_name = PATH + pdf_name + "_split.pdf"
 
+    print("OPENING NEW_NAME")
     with open(new_name, 'wb') as output_pdf:
         pdf_out.write(output_pdf)
 
+    print("STARTING GET_PDF_IMAGES")
     get_pdf_images(opener(new_name), FINAL_NAME)
 
     return FINAL_NAME
