@@ -4,11 +4,12 @@ class BoundingBox:
 
     CUTOFF = 50
 
-    def __init__(self, x0, y0, x1, y1):
+    def __init__(self, x0, y0, x1, y1, screen_size):
         self.x0 = x0
         self.y0 = y0
         self.x1 = x1
         self.y1 = y1
+        self.screen_size = screen_size
 
     def __str__(self):
         return f"Bounding Box({self.x0}, {self.y0}, {self.x1}, {self.y1})"
@@ -37,18 +38,26 @@ class BoundingBox:
     def merge_x0(self, b: float) -> None:
         """" set self.x0 to minimum of self.x0 and b """
         self.x0 = min(self.x0, b)
+        if self.x0 < 0:
+            self.x0 = 0
     
     def merge_y0(self, b: float) -> None:
         """" set self.y0 to minimum of self.y0 and b """
         self.y0 = min(self.y0, b)
+        if self.y0 < 0:
+            self.y0 = 0
 
     def merge_x1(self, b: float) -> None:
         """" set self.x1 to maximum of self.x1 and b """
         self.x1 = max(self.x1, b)
+        if self.x1 > self.screen_size[0]:
+            self.x1 = self.screen_size[0]
 
     def merge_y1(self, b: float) -> None:
         """" set self.y1 to maximum of self.y1 and b """
         self.y1 = max(self.y1, b)
+        if self.y1 > self.screen_size[1]:
+            self.y1 = self.screen_size[1]
     
     def distance(self, b: float) -> float:
         """ distance formula from center of two boxes """
