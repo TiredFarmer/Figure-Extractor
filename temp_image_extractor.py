@@ -46,7 +46,7 @@ def get_pdf_images(doc):
         pix = page.get_pixmap()
         page_image = Image.open(io.BytesIO(pix.tobytes()))
         page_image.show()
-        if i >= 10:
+        if i >= 0:
             break
 
     print(len(images))
@@ -54,8 +54,8 @@ def get_pdf_images(doc):
     print(rects)    
     images[0].save("raw_pdfs\extracted.pdf", save_all = True, append_images = images[1:])
   
-file = "raw_pdfs\\bio_book.pdf"
-# file = "raw_pdfs\\tikz_demo.pdf"
+# file = "raw_pdfs\\bio_book.pdf"
+file = "raw_pdfs\\tikz_demo.pdf"
 
 pdf_file = fitz.open(file)
 
