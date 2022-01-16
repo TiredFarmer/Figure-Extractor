@@ -2,13 +2,13 @@ from asyncio import streams
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from image_extractor import get_pdf_images, opener
 
-PATH = "pdf/"
+PATH = "split_pdf/"
 
 def split_pdf_get_images(pdf_name: str, start: int, end: int) -> str:
 
-    FINAL_NAME = "extracted"
+    FINAL_NAME = pdf_name + "_extracted"
 
-    pdf_in = PdfFileReader(PATH + pdf_name + ".pdf")
+    pdf_in = PdfFileReader("raw_pdf/" + pdf_name + ".pdf")
     pdf_out = PdfFileWriter()
 
     if end == -1:
