@@ -9,7 +9,6 @@ class BoundingBox:
         self.y0 = y0
         self.x1 = x1
         self.y1 = y1
-        self.count = 1
 
     def __str__(self):
         return f"Bounding Box({self.x0}, {self.y0}, {self.x1}, {self.y1})"
@@ -50,4 +49,16 @@ class BoundingBox:
     def merge_y1(self, b: float) -> None:
         """" set self.y1 to maximum of self.y1 and b """
         self.y1 = max(self.y1, b)
+    
+    def distance(self, b: float) -> float:
+        """ distance formula from center of two boxes """
+        center_x = (self.x0 + self.x1) / 2
+        center_y = (self.y0 + self.y1) / 2
+        center_x_2 = (b.x0 + b.x1) / 2
+        center_y_2 = (b.y0 + b.y1) / 2
+
+        return  ((center_x_2 - center_x) ** 2 + (center_y_2 - center_y) ** 2) ** 0.5
+
+    def area(self) -> float:
+        return (self.x1 - self.x0) * (self.y1 - self.y0)
         

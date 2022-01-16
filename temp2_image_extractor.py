@@ -12,7 +12,8 @@ def get_pdf_images(doc):
     for i in range(doc.pageCount):
         page = doc[i]
         get_page_images(page, doc)
-        break
+        if i >= 2:
+            break
 
 
 
@@ -29,6 +30,8 @@ def get_page_images(page, doc):
 
     final_boxes.append(initial_boxes[0])
 
+    initial_boxes.sort(key=lambda x : final_boxes[0].distance(x))
+
     for box_b in initial_boxes[1:]:
         print("EXECUTING LOOP")
         for box_a in final_boxes:
@@ -43,9 +46,12 @@ def get_page_images(page, doc):
 
     
     print("FINAL BOXES:++++")
+
+    final_boxes = [b for b in final_boxes if b.area() >= 150]
     for box in final_boxes:
-        page.draw_rect(fitz.Rect(box.x0, box.y0, box.x1, box.y1), color = [1,0,0,0], overlay=True, width = 1, fill_opacity=1)
+        page.draw_rect(fitz.Rect(box.x0, box.y0, box.x1, box.y1), color = [1,0,0,0], overlay=True, width = 5, fill_opacity=1)
         print(box)
+        print(box.area())
     
     pix = page.get_pixmap()
     page_image = Image.open(io.BytesIO(pix.tobytes()))
