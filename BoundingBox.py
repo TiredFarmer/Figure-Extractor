@@ -2,13 +2,12 @@
 # Box representing top left: (x0, y0) and bottom right of box (x1, y1)
 class BoundingBox:
 
-    CUTOFF = 50
-
     def __init__(self, x0, y0, x1, y1, screen_size):
         self.x0 = x0
         self.y0 = y0
         self.x1 = x1
         self.y1 = y1
+        self.CUTOFF = 50
         self.screen_size = screen_size
 
     def __str__(self):
@@ -23,9 +22,12 @@ class BoundingBox:
         return (self.x0 - self.CUTOFF <= b2.x0 <= self.x1 + self.CUTOFF) or (self.x0 - self.CUTOFF <= b2.x1 <= self.x1 + self.CUTOFF)
         # return abs(self.x0 - b2.x0) <= self.CUTOFF or abs(self.x1 - b2.x1) <= self.CUTOFF or self.is_x_overlap(b2)
     
-    def is_y_valid(self, b2) -> bool:
+    def is_y_valid(self, b2, cutoff = 0) -> bool:
         """ produce true if b2.y0 or b2.y1 is within the inflated y-size of self """
-        return (self.y0 - self.CUTOFF <= b2.y0 <= self.y1 + self.CUTOFF) or (self.y0 - self.CUTOFF <= b2.y1 <= self.y1 + self.CUTOFF)
+        if cutoff == 0:
+            return (self.y0 - self.CUTOFF <= b2.y0 <= self.y1 + self.CUTOFF) or (self.y0 - self.CUTOFF <= b2.y1 <= self.y1 + self.CUTOFF)
+        
+        return (self.y0 - cutoff <= b2.y0 <= self.y1 + cutoff) or (self.y0 - cutoff <= b2.y1 <= self.y1 + cutoff)
         #return abs(self.y0 - b2.y0) <= self.CUTOFF or abs(self.y1 - b2.y1) <= self.CUTOFF
     
     def merge_boxes(self, b2) -> None:
@@ -70,4 +72,21 @@ class BoundingBox:
 
     def area(self) -> float:
         return (self.x1 - self.x0) * (self.y1 - self.y0)
+    
+    def expand(self, value):
+        """ expand all borders by a fixed value, checking so it doesn't go off screen """
+        self.x0 -= value
+        if self.x0 < 0:
+            self.x0 = 0
         
+        self.y0 -= value
+        if self.y0 < 0:
+            self.y0 = 0
+        
+        self.x1 += value
+        if self.x1 > self.screen_size[0]:
+            self.x1 = self.screen_size[0]
+        
+        self.y1 += value
+        if self.y1 > self.screen_size[1]:
+            self.y1 = self.screen_size[1]

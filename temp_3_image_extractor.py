@@ -1,6 +1,5 @@
 # STEP 1
 # import libraries
-from re import I
 import fitz
 import io
 from PIL import Image
@@ -51,16 +50,24 @@ def get_page_images(page, doc):
     
     final_boxes = [b for b in final_boxes if b.area() >= 150]
     
-    print(page_image.size)
-    for box in final_boxes:
-        img = page_image.crop((box.x0, box.y0, box.x1, box.y1))
-        page_images.append(img)
-        print(box)
 
     for box in final_boxes:
-        page.draw_rect(fitz.Rect(box.x0, box.y0, box.x1, box.y1), color = [1,0,0,0], overlay=True, width = 5, fill_opacity=1)
-        print(box)
-        print(box.area())
+        text_boxes = get_text_boxes(page)
+        box.CUTOFF = 40
+        text_boxes = [b for b in text_boxes if box.is_valid(b)]
+
+        for text_box in text_boxes:
+            box.merge_boxes(text_box)
+        
+        img = page_image.crop((box.x0, box.y0, box.x1, box.y1))
+        page_images.append(img)
+
+
+    for box in final_boxes:
+        page.draw_rect(fitz.Rect(box.x0, box.y0, box.x1, box.y1), color = [1,0,0,0], overlay=True, width = 1, fill_opacity=1)
+        # print(box)
+        # print(box.area())
+    
 
     # pix = page.get_pixmap()
     # page_image = Image.open(io.BytesIO(pix.tobytes()))
@@ -82,13 +89,13 @@ def get_initial_boxes(page, doc, size):
     # loop through drawings in a page
     for p in page.get_drawings():
         for item in p["items"]:
-            # if item[0] == "l":
-            #     x0 = min(item[1].x, item[2].x)
-            #     y0 = min(item[1].y, item[2].y)
-            #     x1 = max(item[1].x, item[2].x)
-            #     y1 = max(item[1].y, item[2].y)
+            if item[0] == "l":
+                x0 = min(item[1].x, item[2].x)
+                y0 = min(item[1].y, item[2].y)
+                x1 = max(item[1].x, item[2].x)
+                y1 = max(item[1].y, item[2].y)
 
-            #     initial_boxes.append(BoundingBox(x0, y0, x1, y1, size))
+                initial_boxes.append(BoundingBox(x0, y0, x1, y1, size))
 
                 # page.draw_line(item[1], item[2], color = [0,1,0,0], overlay=True, width = 3)
 
@@ -103,7 +110,17 @@ def get_initial_boxes(page, doc, size):
                 # page.draw_bezier(item[1], item[2], item[3], item[4], color = [0,0,1,0], overlay=True, width = 3)
 
     return initial_boxes
-  
+
+def get_text_boxes(page):
+    bound_boxes = []
+    # loop through paragraphs in a page
+    for block in page.get_text("dict")["blocks"]:
+        if block['type'] == 0: # block contains text
+            rect = block['bbox']
+            bound_boxes.append(BoundingBox(rect[0], rect[1], rect[2], rect[3], 0))
+    
+    return bound_boxes
+
 file = "raw_pdfs\\bio_book.pdf"
 
 # file = "raw_pdfs\\tikz_demo.pdf"
