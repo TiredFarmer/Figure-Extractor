@@ -4,47 +4,24 @@ import fitz
 import io
 from PIL import Image
 
-# TODO what if no images?
-def get_pdf_images(doc):
+def get_pdf_images(doc, final_name):
     images = []
-    rects = []
 
     for i in range(doc.pageCount):
-        page = doc[i]
-        page_rects = []
-        # loop through images in a page
-        for item in page.get_images(full = True):
+        for item in doc.getPageImageList(i):
             pix = fitz.Pixmap(doc, item[0])  # pixmap from the image xref
             pix0 = fitz.Pixmap(fitz.csRGB, pix)  # force into RGB
-            data = pix0.tobytes()
+            data = pix0.getImageData()
             img = Image.open(io.BytesIO(data))
             images.append(img)
+    
+    images[0].save(f"pdf\{final_name}.pdf", save_all = True, append_images = images[1:])
 
-            rect = page.get_image_bbox(item)
-            page_rects.append(rect)
-            page.draw_rect(rect, color=[0,1,1,0], overlay=True,width=0.5,fill_opacity=1)
+def opener(file):
+    return fitz.open(file)
 
-        # loop through paragraphs in a page
-        for block in page.getText("dict")["blocks"]:
-            if block['type'] == 0: # block contains text
-                page.draw_rect(block['bbox'], color = [1,0,0,0], overlay=True, width = 0.5, fill_opacity=1)
-        
-        rects.append(page_rects)
-        print(page_rects)
-        pix = page.getPixmap()
-        page_image = Image.open(io.BytesIO(pix.tobytes()))
-        page_image.show()
-        if i >= 4:
-            break
-
-    print(len(images))
-    print(len(rects))
-    print(rects)    
-    images[0].save("raw_pdfs\extracted.pdf", save_all = True, append_images = images[1:])
-
+# if __name__ == "__main__":
   
-file = "raw_pdfs\\bio_book.pdf"
-
-pdf_file = fitz.open(file)
-
-get_pdf_images(pdf_file)
+#     file = "raw_pdfs/bio_book.pdf"
+#     pdf_file = fitz.open(file)
+#     get_pdf_images(pdf_file)
