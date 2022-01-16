@@ -41,20 +41,23 @@ def upload_file():
 
         # Get page numbers
         form_data = request.form
+
         start_page = int(form_data['start_page'])
         end_page = int(form_data['end_page'])
+    
+      
 
         if start_page > end_page and end_page != -1:
             flash('End page must be greater than start page')
             return redirect(request.url)
 
-        print(start_page, end_page)
+        # print(start_page, end_page)
 
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             filename_nodot = filename.split(".pdf")[0]
-            print(filename)
+           # print(filename)
             final_name = split_pdf_get_images(filename_nodot, start_page, end_page) + ".pdf"
             return redirect('/downloadfile/'+ final_name)
             #return redirect('/downloadfile/extracted.pdf')
