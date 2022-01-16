@@ -16,47 +16,45 @@ class BoundingBox:
     
     def is_valid(self, b2: BoundingBox) -> bool:
         """ produce true if b2 is (close enough) to current box """
-        return self.is_x_valid(b2) and self.is_y_valid(b2)
+        return self._is_x_valid(b2) and self._is_y_valid(b2)
     
-    def is_x_valid(self, b2: BoundingBox) -> bool:
+    def _is_x_valid(self, b2: BoundingBox) -> bool:
         """ produce true if b2.x0 or b2.x1 is within the inflated x-size of self """
         return (self.x0 - self.CUTOFF <= b2.x0 <= self.x1 + self.CUTOFF) or (self.x0 - self.CUTOFF <= b2.x1 <= self.x1 + self.CUTOFF)
-        # return abs(self.x0 - b2.x0) <= self.CUTOFF or abs(self.x1 - b2.x1) <= self.CUTOFF or self.is_x_overlap(b2)
     
-    def is_y_valid(self, b2: BoundingBox, cutoff: int = 0) -> bool:
+    def _is_y_valid(self, b2: BoundingBox, cutoff: int = 0) -> bool:
         """ produce true if b2.y0 or b2.y1 is within the inflated y-size of self """
         if cutoff == 0:
             return (self.y0 - self.CUTOFF <= b2.y0 <= self.y1 + self.CUTOFF) or (self.y0 - self.CUTOFF <= b2.y1 <= self.y1 + self.CUTOFF)
         
         return (self.y0 - cutoff <= b2.y0 <= self.y1 + cutoff) or (self.y0 - cutoff <= b2.y1 <= self.y1 + cutoff)
-        #return abs(self.y0 - b2.y0) <= self.CUTOFF or abs(self.y1 - b2.y1) <= self.CUTOFF
     
     def merge_boxes(self, b2: BoundingBox) -> None:
         """" combine boxes with extreme coordinates of the two """
-        self.merge_x0(b2.x0)
-        self.merge_y0(b2.y0)
-        self.merge_x1(b2.x1)
-        self.merge_y1(b2.y1)
+        self._merge_x0(b2.x0)
+        self._merge_y0(b2.y0)
+        self._merge_x1(b2.x1)
+        self._merge_y1(b2.y1)
     
-    def merge_x0(self, b: float) -> None:
+    def _merge_x0(self, b: float) -> None:
         """" set self.x0 to minimum of self.x0 and b """
         self.x0 = min(self.x0, b)
         if self.x0 < 0:
             self.x0 = 0
     
-    def merge_y0(self, b: float) -> None:
+    def _merge_y0(self, b: float) -> None:
         """" set self.y0 to minimum of self.y0 and b """
         self.y0 = min(self.y0, b)
         if self.y0 < 0:
             self.y0 = 0
 
-    def merge_x1(self, b: float) -> None:
+    def _merge_x1(self, b: float) -> None:
         """" set self.x1 to maximum of self.x1 and b """
         self.x1 = max(self.x1, b)
         if self.x1 > self.screen_size[0]:
             self.x1 = self.screen_size[0]
 
-    def merge_y1(self, b: float) -> None:
+    def _merge_y1(self, b: float) -> None:
         """" set self.y1 to maximum of self.y1 and b """
         self.y1 = max(self.y1, b)
         if self.y1 > self.screen_size[1]:
