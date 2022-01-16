@@ -12,6 +12,7 @@ def get_pdf_images(doc):
     for i in range(doc.pageCount):
         page = doc[i]
         page_rects = []
+        # loop through images in a page
         for item in page.get_images(full = True):
             pix = fitz.Pixmap(doc, item[0])  # pixmap from the image xref
             pix0 = fitz.Pixmap(fitz.csRGB, pix)  # force into RGB
@@ -23,6 +24,10 @@ def get_pdf_images(doc):
             page_rects.append(rect)
             page.draw_rect(rect, color=[0,1,1,0], overlay=True,width=0.5,fill_opacity=1)
 
+        # loop through paragraphs in a page
+        for block in page.getText("dict")["blocks"]:
+            if block['type'] == 0: # block contains text
+                page.draw_rect(block['bbox'], color = [1,0,0,0], overlay=True, width = 0.5, fill_opacity=1)
         
         rects.append(page_rects)
         print(page_rects)
