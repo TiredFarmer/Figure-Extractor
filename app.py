@@ -5,7 +5,7 @@ import os
 from werkzeug.utils import secure_filename
 from markupsafe import escape
 
-#from pdf_manager import split_pdf_get_images
+from pdf_manager import split_pdf_get_images
 
 UPLOAD_FOLDER = 'raw_pdfs'
 ALLOWED_EXTENSIONS = {'pdf'}
@@ -50,10 +50,9 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             filename_nodot = filename.split(".pdf")[0]
             print(filename)
-            #split_pdf_get_images(filename_nodot, start_page, end_page)
-            # call pdf function
-            #return redirect('/downloadfile/'+ filename)
-            return redirect('/downloadfile/extracted.pdf')
+            final_name = split_pdf_get_images(filename_nodot, start_page, end_page) + ".pdf"
+            return redirect('/downloadfile/'+ final_name)
+            #return redirect('/downloadfile/extracted.pdf')
              #url_for('static', filename='css/main.css')
 
     # GET: return index.html         
