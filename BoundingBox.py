@@ -1,3 +1,4 @@
+from __future__ import annotations
 
 # Box representing top left: (x0, y0) and bottom right of box (x1, y1)
 class BoundingBox:
@@ -13,16 +14,16 @@ class BoundingBox:
     def __str__(self):
         return f"Bounding Box({self.x0}, {self.y0}, {self.x1}, {self.y1})"
     
-    def is_valid(self, b2) -> bool:
+    def is_valid(self, b2: BoundingBox) -> bool:
         """ produce true if b2 is (close enough) to current box """
         return self.is_x_valid(b2) and self.is_y_valid(b2)
     
-    def is_x_valid(self, b2) -> bool:
+    def is_x_valid(self, b2: BoundingBox) -> bool:
         """ produce true if b2.x0 or b2.x1 is within the inflated x-size of self """
         return (self.x0 - self.CUTOFF <= b2.x0 <= self.x1 + self.CUTOFF) or (self.x0 - self.CUTOFF <= b2.x1 <= self.x1 + self.CUTOFF)
         # return abs(self.x0 - b2.x0) <= self.CUTOFF or abs(self.x1 - b2.x1) <= self.CUTOFF or self.is_x_overlap(b2)
     
-    def is_y_valid(self, b2, cutoff = 0) -> bool:
+    def is_y_valid(self, b2: BoundingBox, cutoff: int = 0) -> bool:
         """ produce true if b2.y0 or b2.y1 is within the inflated y-size of self """
         if cutoff == 0:
             return (self.y0 - self.CUTOFF <= b2.y0 <= self.y1 + self.CUTOFF) or (self.y0 - self.CUTOFF <= b2.y1 <= self.y1 + self.CUTOFF)
@@ -30,7 +31,7 @@ class BoundingBox:
         return (self.y0 - cutoff <= b2.y0 <= self.y1 + cutoff) or (self.y0 - cutoff <= b2.y1 <= self.y1 + cutoff)
         #return abs(self.y0 - b2.y0) <= self.CUTOFF or abs(self.y1 - b2.y1) <= self.CUTOFF
     
-    def merge_boxes(self, b2) -> None:
+    def merge_boxes(self, b2: BoundingBox) -> None:
         """" combine boxes with extreme coordinates of the two """
         self.merge_x0(b2.x0)
         self.merge_y0(b2.y0)
@@ -73,7 +74,7 @@ class BoundingBox:
     def area(self) -> float:
         return (self.x1 - self.x0) * (self.y1 - self.y0)
     
-    def expand(self, value):
+    def expand(self, value: float) -> None:
         """ expand all borders by a fixed value, checking so it doesn't go off screen """
         self.x0 -= value
         if self.x0 < 0:
