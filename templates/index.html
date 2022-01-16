@@ -6,11 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    <title>Document</title>
+    <title>Home</title>
 </head>
 
 <body>
-    <h1>Upload new File</h1>
+
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <ul class=flashes>
@@ -20,12 +20,31 @@
     </ul>
     {% endif %}
     {% endwith %}
+
+<div class="banner">
+    <h1 class="title">Upload new File</h1>
+
     <form method=post enctype=multipart/form-data>
-        <input type=file name=file>
-        <input type="number" name="start_page">
-        <input type="number" name="end_page">
-        <input type=submit value=Upload>
+        <div class="container">
+            <label class="custom-label">
+                FILE
+                <input type=file name=file>
+            </label>
+        </div>
+        <div class="container">
+            <p>Start Page:</p>
+            <input type="number" name="start_page" min="0">
+            <p>End Page (-1 for end of document):</p>
+            <input type="number" name="end_page" min="-1">
+        </div>
+
+        <div class="contianer">
+            <input type=submit value=Upload>
+        </div>
+
     </form>
+</div>
+
 </body>
 
 </html>
