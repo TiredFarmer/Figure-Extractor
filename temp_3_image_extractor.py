@@ -10,16 +10,21 @@ def get_pdf_images(doc):
 
     for i in range(doc.pageCount):
         page = doc[i]
-        images.append(get_page_images(page, doc))
-        if i >= 7:
+
+        l = get_page_images(page, doc)
+        for image in l:
+            images.append(image)
+
+        if i >= 5:
             break
     
-    for l in images:
-        for image in l:
-            image.show()
+    if len(images) <= 1:
+        return
+
+    images[0].save("raw_pdfs\extracted.pdf", save_all = True, append_images = images[1:])
 
 
-    # images[0].save("raw_pdfs\extracted.pdf", save_all = True, append_images = images[1:])
+
 
 
 def get_page_images(page, doc):
