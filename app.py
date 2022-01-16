@@ -2,6 +2,8 @@ from posixpath import split
 from flask import Flask, render_template, flash, request, redirect, url_for, send_file
 
 import os
+from os import path
+
 from werkzeug.utils import secure_filename
 from markupsafe import escape
 
@@ -59,6 +61,11 @@ def upload_file():
             filename_nodot = filename.split(".pdf")[0]
            # print(filename)
             final_name = split_pdf_get_images(filename_nodot, start_page, end_page) + ".pdf"
+            # if no file named final_name ... then flash error and redirect
+            if not path.isfile(f"pdf\{filename_nodot}_extracted.pdf"):
+                flash("Error, cannot extract figures from file")
+                return redirect(request.url)
+            #pdf\bio_extracted.pdf
             return redirect('/downloadfile/'+ final_name)
             #return redirect('/downloadfile/extracted.pdf')
              #url_for('static', filename='css/main.css')
